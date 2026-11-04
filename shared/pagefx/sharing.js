@@ -53,7 +53,7 @@
     if (!body) return null;
     for (const w of body.querySelectorAll(':scope > .card-wrap')) {
       const t = w.querySelector(':scope > .card-title > span');
-      if (t && re.test(t.textContent || '')) return w;
+      if (t && re.test(window.DuoDeskI18n ? window.DuoDeskI18n.sourceText(t) : (t.textContent || ''))) return w;
     }
     return null;
   }
@@ -650,7 +650,7 @@
         const ready = safe(() => UI.hubReady(s, 'files'), !!hub.files && !!hub.connected);
         const ble = safe(() => UI.onBle(s), false);
         const listNode = listEl(page);
-        const loading = !!(listNode && /loading/i.test((listNode.querySelector('.hub-empty') || {}).textContent || ''));
+        const loading = !!(listNode && /loading/i.test(window.DuoDeskI18n ? window.DuoDeskI18n.sourceText(listNode.querySelector('.hub-empty')) : ((listNode.querySelector('.hub-empty') || {}).textContent || '')));
         const err = ready && !ble && fs && fs.error ? (page.querySelector('.hub-fs-status') || {}).textContent || fs.error : '';
         const st = !ready ? 'off' : ble ? 'ble' : err ? 'error' : !(fs && fs.total) ? 'loading' : 'ok';
         ctx.attr(r.h, 'data-state', st);
