@@ -12,9 +12,9 @@ on:
         required: false
         default: ''
       ref:
-        description: Branch to build (a test branch; releases come from main).
+        description: Optional Git ref override; empty uses the selected workflow branch or tag.
         required: false
-        default: main
+        default: ''
       virustotal:
         description: Scan the installers on VirusTotal (needs the VT_API_KEY secret; uploads are shared with its partners)
         type: boolean
@@ -35,11 +35,11 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      # Dispatch: main unless another branch is asked for (ref), whichever branch the run was started
-      # from. Tag push: the pushed tag.
+      # Dispatch: checkout the branch selected in Run workflow unless ref overrides it.
+      # Tag push: checkout the pushed tag.
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.ref || (github.event_name == 'workflow_dispatch' && 'main') || github.ref }}
+          ref: ${{ inputs.ref || github.ref }}
 
       - uses: actions/setup-node@v4
         with:
