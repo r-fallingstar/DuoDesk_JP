@@ -4,6 +4,8 @@
 
 <h1 align="center"><a href="https://getduodesk.vercel.app">DuoDesk</a></h1>
 
+<p align="center"><a href="README_JA.md">🇯🇵 日本語化について / Japanese localization (unofficial)</a></p>
+
 <p align="center">
   <b>All your computers and your phone, working as one desk.</b><br>
   Screens, apps, files, clipboard, cameras, calls, texts, notifications, mouse and keyboard, shared between Mac, Windows, Linux and Android.<br>
