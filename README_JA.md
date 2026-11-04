@@ -24,7 +24,7 @@
 
 ## Windows用インストーラーの作成方法
 
-GitHubにログインした状態で、リポジトリの **Actions → Build Windows → Run workflow** を開きます。
+GitHubにログインした状態で、リポジトリの **Actions → Build Windows → Run workflow** を開きます。Fork直後はActionsが無効な場合があります。Actionsのページに「I understand my workflows, go ahead and enable them」などの確認が表示された場合は、内容を確認して有効化してください。
 
 1. ワークフローの入力欄 **ref** に **i18n/japanese-desktop-v2.5.0** を指定します。
 2. **tag** は空欄のまま実行します（リリースを新規公開せず、Actionsの成果物として作成するため）。
@@ -38,7 +38,7 @@ GitHubにログインした状態で、リポジトリの **Actions → Build Wi
 - 日本語フォント・言語切り替えボタンのスタイル：[shared/i18n-ja.css](shared/i18n-ja.css)
 - デスクトップ用HTML 6ファイルの最後で読み込んでいます。
 - 未訳語を追加する場合は辞書に **画面上の英語表記と一致する文字列** を追加してください。
-- 開発中は node --check shared/i18n-ja.js でJavaScript構文を確認できます。
+- 開発中は node --check shared/i18n-ja.js でJavaScript構文を確認できます。node --test shared/test/i18n-ja.test.js で簡易テストを実行できます。
 
 ## ライセンスと謝辞
 
