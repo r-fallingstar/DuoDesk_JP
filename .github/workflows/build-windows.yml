@@ -45,6 +45,20 @@ jobs:
         with:
           node-version: 20
 
+      # Fail instead of silently packaging upstream English sources on i18n builds.
+      - name: Verify localization checkout
+        if: startsWith(github.ref, 'refs/heads/i18n/')
+        shell: pwsh
+        run: |
+          Write-Host "Building source: $(git rev-parse HEAD)"
+          if (!(Test-Path shared/i18n-ja.js)) { throw "Japanese translation source missing: wrong branch checked out" }
+          if (!(Test-Path shared/i18n-ja.css)) { throw "Japanese translation stylesheet missing" }
+          if (!(Select-String -Path windows/app.html -Pattern 'i18n-ja.js' -Quiet)) { throw "Windows application HTML has no localization script" }
+
+      - name: Test Japanese localization
+        if: startsWith(github.ref, 'refs/heads/i18n/')
+        run: node --test shared/test/i18n-ja.test.js
+
       - uses: ./.github/actions/android-full
         with:
           keystore: ${{ secrets.ANDROID_KEYSTORE }}
