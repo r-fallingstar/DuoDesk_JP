@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const path = require('node:path');
 
-function harness() {
+function harness(withGeneral = false) {
   const NODE = { ELEMENT_NODE: 1, TEXT_NODE: 3, DOCUMENT_FRAGMENT_NODE: 11 };
   let observer;
   class Text {
@@ -24,6 +24,7 @@ function harness() {
       this.children = [];
       this.attrs = new Map();
       this.handlers = {};
+      this.classList = { add() {} };
     }
     get firstChild() { return this.children[0] || null; }
     get nextSibling() {
@@ -37,6 +38,11 @@ function harness() {
     set textContent(value) {
       this.children = [];
       this.appendChild(new Text(value));
+    }
+    prepend(node) {
+      node.parentElement = this;
+      this.children.unshift(node);
+      return node;
     }
     appendChild(node) {
       node.parentElement = this;
@@ -63,6 +69,8 @@ function harness() {
   const placeholder = new Element('input');
   placeholder.setAttribute('placeholder', 'Hotspot name');
   body.appendChild(placeholder);
+  const general = new Element();
+  let localeChoice = null;
   const peer = new Element('span');
   peer.appendChild(new Text('My computer'));
   body.appendChild(peer);
@@ -71,10 +79,34 @@ function harness() {
     body,
     documentElement: { lang: 'en' },
     createElement: (tag) => new Element(tag),
-    querySelector: (selector) => selector === '#sidebar .identity' ? sidebar : null
+    querySelector: (selector) => selector === '#sidebar .identity' ? sidebar
+      : selector === '#page-general .page-body' && withGeneral ? general : null
   };
   const store = new Map();
+  if (withGeneral) body.appendChild(general);
   const window = {};
+  if (withGeneral) window.UI = {
+    select(opts, onChange) {
+      const el = new Element('select');
+      el.value = 'en';
+      localeChoice = { el, set: (value) => { el.value = value; },
+        choose: (value) => { el.value = value; onChange(value); } };
+      return localeChoice;
+    },
+    row(label, hint, controls) {
+      const r = new Element();
+      r.appendChild(new Text(label));
+      r.appendChild(new Text(hint));
+      for (const c of controls) r.appendChild(c);
+      return r;
+    },
+    card(title, rows) {
+      const card = new Element();
+      card.appendChild(new Text(title));
+      for (const r of rows) card.appendChild(r);
+      return card;
+    }
+  };
   const context = {
     window, document, Node: NODE,
     localStorage: {
@@ -89,7 +121,8 @@ function harness() {
   };
   const source = fs.readFileSync(path.join(__dirname, '..', 'i18n-ja.js'), 'utf8');
   vm.runInNewContext(source, context, { filename: 'i18n-ja.js' });
-  return { document, window, sidebar, state, placeholder, peer, observe: (mutations) => observer(mutations) };
+  return { document, window, sidebar, general, choice: () => localeChoice,
+    state, placeholder, peer, observe: (mutations) => observer(mutations) };
 }
 
 test('Japanese is the initial desktop language', () => {
@@ -120,4 +153,20 @@ test('Newly rendered status text is translated', () => {
   h.observe([{ type: 'childList', addedNodes: [h.state.children[0]] }]);
   assert.equal(h.state.textContent, '接続済み');
   assert.equal(h.window.DuoDeskI18n.sourceText(h.state), 'Connected');
+});
+
+test('General settings provides a persistent Japanese/English selector', () => {
+  const h = harness(true);
+  assert.equal(h.general.children.length, 1);
+  const choice = h.choice();
+  assert.ok(choice, 'language selector is installed in General settings');
+  assert.equal(choice.el.value, 'ja');
+  assert.equal(choice.el.getAttribute('aria-label'), '表示言語 / Display language');
+  choice.choose('en');
+  assert.equal(h.document.documentElement.lang, 'en');
+  assert.equal(h.state.textContent, 'Not connected');
+  assert.equal(h.sidebar.children[0].textContent, '日本語');
+  choice.choose('ja');
+  assert.equal(h.document.documentElement.lang, 'ja');
+  assert.equal(h.state.textContent, '未接続');
 });
