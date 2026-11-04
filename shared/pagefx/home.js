@@ -22,9 +22,10 @@
   const num = (v) => (typeof v === 'number' && isFinite(v) ? v : null);
   const arr = (v) => (Array.isArray(v) ? v : []);
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const titleOf = (wrap) => { const t = wrap && wrap.querySelector(':scope > .card-title > span:first-child'); return t ? t.textContent.trim() : ''; };
+  const canonicalText = (el) => window.DuoDeskI18n ? window.DuoDeskI18n.sourceText(el) : el.textContent.trim();
+  const titleOf = (wrap) => { const t = wrap && wrap.querySelector(':scope > .card-title > span:first-child'); return t ? canonicalText(t) : ''; };
   const wrapByTitle = (body, re) => (body ? [...body.querySelectorAll('.card-wrap')].find((w) => re.test(titleOf(w))) : null) || null;
-  const rowByLabel = (root, re) => (root ? [...root.querySelectorAll('.row')].find((r) => { const l = r.querySelector(':scope > .text > .label'); return l && re.test(l.textContent.trim()); }) : null) || null;
+  const rowByLabel = (root, re) => (root ? [...root.querySelectorAll('.row')].find((r) => { const l = r.querySelector(':scope > .text > .label'); return l && re.test(canonicalText(l)); }) : null) || null;
   const hexLum = (hex) => {
     const m = String(hex || '').match(/^#([0-9a-f]{3}|[0-9a-f]{6})/i);
     if (!m) return 0;
@@ -624,7 +625,7 @@
       if (!body) return null;
       const near = (sel) => { const e = body.querySelector(sel); return e ? e.closest('.row') : null; };
       switch (k) {
-        case 'fw': return rowByLabel(body, /^firewall$/i) || [...body.querySelectorAll('.row .btn')].map((b) => /check again/i.test(b.textContent) && b.closest('.row')).find(Boolean) || null;
+        case 'fw': return rowByLabel(body, /^firewall$/i) || [...body.querySelectorAll('.row .btn')].map((b) => /check again/i.test(canonicalText(b)) && b.closest('.row')).find(Boolean) || null;
         case 'helper': return rowByLabel(body, /helper/i);
         case 'bt': return near('input.switch[aria-label="Bluetooth with phones"]') || rowByLabel(body, /^bluetooth/i);
         case 'vdd': return rowByLabel(body, /display driver/i);
