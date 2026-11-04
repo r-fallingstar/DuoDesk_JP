@@ -458,7 +458,7 @@
         const status = page.querySelector('.hub-media-status');
         let was = false;
         ctx.observe(status, { characterData: true, childList: true, subtree: true }, () => {
-          const now = /^Saving/.test((status.textContent || '').trim());
+          const now = /^Saving/.test(window.DuoDeskI18n ? window.DuoDeskI18n.sourceText(status) : (status.textContent || '').trim());
           if (now && !was && ctx.active()) {
             const pics = [...H.track.querySelectorAll('.pm-frame img[src]')].slice(0, 3);
             [...H.drops.children].forEach((d, i) => { ctx.css(d, 'background-image', pics[i] ? 'url("' + pics[i].getAttribute('src') + '")' : null); });
