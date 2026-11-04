@@ -118,7 +118,7 @@
   "What’s New": "新機能",
   "What’s new": "新機能",
   "Not connected": "未接続",
-  "Not paired": "ペアリングされていません",
+  "Not paired": "未ペアリング",
   "Connected": "接続済み",
   "Disconnected": "切断済み",
   "Connecting…": "接続中…",
@@ -527,7 +527,42 @@
   "The card above, there too": "上記のカードを相手側にも表示します",
   "Open what’s sent at once": "送られた内容をすぐに開く",
   "Show {name}’s notifications on {me}": "相手の通知をこのPCに表示",
-  "Show {me}’s notifications on {name}": "このPCの通知を相手に表示"
+  "Show {me}’s notifications on {name}": "このPCの通知を相手に表示",
+  "Good morning": "おはようございます",
+  "Good afternoon": "こんにちは",
+  "Good evening": "こんばんは",
+  "Good night": "こんばんは",
+  "What should your": "あなたの",
+  "desks": "デスク",
+  "do?": "で何をしますか？",
+  "Add a device": "端末を追加",
+  "Another computer or a phone": "ほかのパソコンやスマホ",
+  "Pair a phone": "スマホをペアリング",
+  "Find nearby": "近くの端末を探す",
+  "this desk": "このPC",
+  "THIS DESK": "このPC",
+  "screen": "画面",
+  "screens": "画面",
+  "All devices": "すべての端末",
+  "Ask DuoDesk anything…": "DuoDeskに何でも質問…",
+  "DISPLAY": "画面",
+  "INPUT": "入力",
+  "SHARING": "共有",
+  "MEDIA": "メディア",
+  "CONNECTION": "接続",
+  "PHONE": "スマホ",
+  "MORE": "その他",
+  "this desk · Windows": "このPC · Windows",
+  "this desk · macOS": "このPC · macOS",
+  "this desk · Linux": "このPC · Linux",
+  "Open General": "一般設定を開く",
+  "Language": "言語",
+  "Display language": "表示言語",
+  "Choose the language for the application interface.": "アプリの表示言語を選択します。",
+  "English": "英語",
+  "Japanese": "日本語",
+  "Switch to English": "英語に切り替え",
+  "Switch to Japanese": "日本語に切り替え"
 });
 
   const textSources = new WeakMap();
@@ -625,6 +660,41 @@
     }
     for (let child = node.firstChild; child; child = child.nextSibling) apply(child);
   }
+  // Application-level language selector. All six desktop shells build #page-general
+  // before loading this module, so this works without patching OS-specific settings.
+  let languageSelect = null;
+  let languageCard = null;
+  function installLanguageSettings() {
+    if (languageCard) return;
+    const body = document.querySelector('#page-general .page-body');
+    const kit = window.UI;
+    if (!body || !kit || typeof kit.card !== 'function' || typeof kit.row !== 'function'
+        || typeof kit.select !== 'function') return;
+    languageSelect = kit.select([
+      { value: 'ja', label: '日本語' },
+      { value: 'en', label: 'English' }
+    ], (value) => setLanguage(value));
+    languageSelect.el.id = 'duodesk-language-select';
+    languageSelect.el.setAttribute('aria-label', '表示言語 / Display language');
+    languageCard = kit.card('表示言語 / Language', [
+      kit.row('表示言語 / Display language',
+        'アプリの表示言語を変更できます。 / Choose the app language.',
+        [languageSelect.el])
+    ], { cls: 'keep-on' });
+    // The language card itself is bilingual and must not be translated twice.
+    languageCard.setAttribute('data-duodesk-no-i18n', '');
+    languageCard.classList.add('duodesk-locale-settings');
+    body.prepend(languageCard);
+    languageSelect.set(language);
+  }
+  function setLanguage(value) {
+    if (value !== 'ja' && value !== 'en') return;
+    language = value;
+    try { localStorage.setItem('duodesk.language', language); } catch (_) {}
+    updateButton();
+    if (languageSelect) languageSelect.set(language);
+    apply(document.body);
+  }
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'duodesk-locale-control';
@@ -635,19 +705,16 @@
     button.setAttribute('aria-label', button.title);
     document.documentElement.lang = language;
   }
-  button.addEventListener('click', () => {
-    language = language === 'ja' ? 'en' : 'ja';
-    try { localStorage.setItem('duodesk.language', language); } catch (_) {}
-    updateButton();
-    apply(document.body);
-  });
+  button.addEventListener('click', () => setLanguage(language === 'ja' ? 'en' : 'ja'));
   window.DuoDeskI18n = Object.freeze({
     sourceText,
     language: () => language,
+    setLanguage,
     translate
   });
   const sidebar = document.querySelector('#sidebar .identity');
   if (sidebar) sidebar.appendChild(button);
+  installLanguageSettings();
   updateButton();
   const pending = new Set();
   let scheduled = false;
