@@ -202,3 +202,29 @@ test('Dynamic hover hints keep peer names intact', () => {
   assert.equal(h.window.DuoDeskI18n.translate('Mouse · off · not available now'),
     'マウス · オフ · 現在利用できません');
 });
+
+
+test('Screen sharing controls and app listing are available in Japanese', () => {
+  const h = harness(true);
+  const tr = h.window.DuoDeskI18n.translate;
+  assert.equal(tr('Low, 10 Mbps'), '低画質・10 Mbps');
+  assert.equal(tr('Same as the other screen'), '相手の画面と同じ');
+  assert.equal(tr('Use apps from the other computer in their own windows.'),
+    '相手のパソコンのアプリを個別のウィンドウで使えます。');
+  assert.equal(tr('Open rion-pc’s apps on this PC'), 'rion-pcのアプリをthis PCで開く');
+  assert.equal(tr('2 open here'), 'このPCで起動中：2個');
+  assert.equal(tr('Pin Calculator to Start'), 'Calculatorをスタートにピン留め');
+});
+
+test('Localization keeps proper device and app names and has no sidebar switch', () => {
+  const h = harness(true);
+  const tr = h.window.DuoDeskI18n.translate;
+  assert.equal(h.sidebar.children.length, 0);
+  assert.equal(tr('See rion-pc in a window on the other computer.'),
+    'rion-pcの画面を相手のパソコンのウィンドウに表示します。');
+  assert.equal(tr('Photos'), 'Photos');
+  h.choice().choose('en');
+  assert.equal(h.state.textContent, 'Not connected');
+  h.choice().choose('ja');
+  assert.equal(h.state.textContent, '未接続');
+});
