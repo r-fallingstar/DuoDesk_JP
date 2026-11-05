@@ -783,6 +783,39 @@
     [/^Couldn’t check: (.+)$/, (v) => '更新を確認できません: ' + v],
     [/^select (.+) first$/, (v) => '先に' + v + 'を選択してください'],
     [/^connect (.+) first$/, (v) => '先に' + v + 'に接続してください'],
+    [/^See (.+) in a window on the other computer\.$/, (pc) => pc + 'の画面を相手のパソコンのウィンドウに表示します。'],
+    [/^Use (.+) as a second screen for (.+)\.$/, (me, peer) => me + 'を' + peer + 'のセカンドディスプレイとして使います。'],
+    [/^Open (.+) from the other computer in their own windows\.$/, (what) => '相手のパソコンの' + what + 'を個別のウィンドウで開きます。'],
+    [/^Open (.+)’s apps on (.+)$/, (device, where) => device + 'のアプリを' + where + 'で開く'],
+    [/^(.+)’s apps$/, (device) => device + 'のアプリ'],
+    [/^(\d+) open here$/, (number) => 'このPCで起動中：' + number + '個'],
+    [/^(\d+) open on (.+)$/, (number, device) => device + 'で起動中：' + number + '個'],
+    [/^(.+) open here$/, (number) => 'このPCで起動中：' + number],
+    [/^Let (.+) start and switch this screen$/, (device) => device + 'から画面共有を開始・切り替え'],
+    [/^Let (.+) use (.+) in its window$/, (peer, me) => peer + 'から' + me + 'をウィンドウで操作できるようにする'],
+    [/^Receive input from (.+)$/, (device) => device + 'からの入力を受け入れる'],
+    [/^Open it on (.+) — no need to touch (.+)$/, (peer, me) => peer + 'で開けば開始できます（' + me + 'での操作は不要）'],
+    [/^(.+) × (.+) · (\d+) fps$/, (w, h, fps) => w + ' × ' + h + '・' + fps + ' fps'],
+    [/^(\d+(?:\.\d+)?) Mbps of (\d+(?:\.\d+)?)$/, (speed, limit) => speed + ' / ' + limit + ' Mbps'],
+    [/^(.+) · limited by (.+)$/, (first, why) => first + ' · 制限要因：' + why],
+    [/^Open (.+) on (.+)$/, (app, device) => app + 'を' + device + 'で開く'],
+    [/^Add (.+) to the Dock$/, (app) => app + 'をDockに追加'],
+    [/^Pin (.+) to Start$/, (app) => app + 'をスタートにピン留め'],
+    [/^Add (.+) to the app menu$/, (app) => app + 'をアプリメニューに追加'],
+    [/^Loading (.+)’s apps…$/, (device) => device + 'のアプリを読み込み中…'],
+    [/^Couldn’t open: (.+)$/, (reason) => '開けませんでした：' + reason],
+    [/^Couldn’t open (.+)$/, (app) => app + 'を開けませんでした'],
+    [/^Opening (.+)$/, (app) => app + 'を起動中…'],
+    [/^Sharing on (.+)$/, (device) => device + 'で共有中'],
+    [/^Showing (.+)$/, (device) => device + 'を表示中'],
+    [/^Starting on (.+)$/, (device) => device + 'で開始中'],
+    [/^Open starts sharing on (.+)$/, (device) => '「開く」を押すと' + device + 'で共有を開始'],
+    [/^Turn on sharing on (.+)$/, (device) => device + 'で共有を有効にしてください'],
+    [/^Ready, starts when (.+)$/, (device) => '準備完了：' + device + 'で開始すると共有されます'],
+    [/^Starts when (.+)$/, (device) => device + 'で開始すると共有されます'],
+    [/^Waiting for (.+)’s screen$/, (device) => device + 'の画面を待っています'],
+    [/^(.+) · offline$/, (device) => device + ' · オフライン'],
+    [/^(.+) · Windows$/, (device) => device + ' · Windows'],
     [/^Open (.+)$/, (v) => v + 'を開く'],
     [/^Select (.+)$/, (v) => v + 'を選択'],
     [/^Connect to (.+)$/, (v) => v + 'に接続']
@@ -796,7 +829,7 @@
     if (value === null) {
       for (const [pattern, format] of matchers) {
         const found = key.match(pattern);
-        if (found) { value = format(found[1]); break; }
+        if (found) { value = format(...found.slice(1)); break; }
       }
     }
     // Handle accessibility suffix before splitting feature/state/reason segments.
