@@ -721,31 +721,18 @@
     if (value !== 'ja' && value !== 'en') return;
     language = value;
     try { localStorage.setItem('duodesk.language', language); } catch (_) {}
-    updateButton();
+    document.documentElement.lang = language;
     if (languageSelect) languageSelect.set(language);
     apply(document.body);
   }
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'duodesk-locale-control';
-  button.setAttribute('data-duodesk-no-i18n', '');
-  function updateButton() {
-    button.textContent = language === 'ja' ? 'EN' : '日本語';
-    button.title = language === 'ja' ? 'Switch to English' : '日本語に切り替え';
-    button.setAttribute('aria-label', button.title);
-    document.documentElement.lang = language;
-  }
-  button.addEventListener('click', () => setLanguage(language === 'ja' ? 'en' : 'ja'));
   window.DuoDeskI18n = Object.freeze({
     sourceText,
     language: () => language,
     setLanguage,
     translate
   });
-  const sidebar = document.querySelector('#sidebar .identity');
-  if (sidebar) sidebar.appendChild(button);
   installLanguageSettings();
-  updateButton();
+  document.documentElement.lang = language;
   const pending = new Set();
   let scheduled = false;
   const observer = new MutationObserver((mutations) => {
