@@ -614,17 +614,17 @@
         if (found) { value = format(found[1]); break; }
       }
     }
-    // Aurora's hover hints combine a feature, on/off state and a reason with " · ".
-    // Translate each component without translating device names or internal identifiers.
-    if (value === null && key.includes(' · ')) {
-      const parts = key.split(' · ');
-      const localized = parts.map((part) => translate(part));
-      if (localized.some((part, i) => part !== parts[i])) value = localized.join(' · ');
-    }
+    // Handle accessibility suffix before splitting feature/state/reason segments.
     if (value === null && key.endsWith(' (opens its page)')) {
       const part = key.slice(0, -' (opens its page)'.length);
       const localized = translate(part);
       if (localized !== part) value = localized + ' （設定ページを開きます）';
+    }
+    // Aurora hover hints combine feature, on/off and reason using a bullet separator.
+    if (value === null && key.includes(' · ')) {
+      const parts = key.split(' · ');
+      const localized = parts.map((part) => translate(part));
+      if (localized.some((part, i) => part !== parts[i])) value = localized.join(' · ');
     }
     return value === null ? source : match[1] + value + match[3];
   }
