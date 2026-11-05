@@ -4,6 +4,7 @@ on:
   # A pushed v* tag builds and puts the files on that tag's release (made as a prerelease).
   push:
     tags: ['v*']
+    branches: ['i18n/japanese-desktop-v2.5.0']
   workflow_dispatch:
     inputs:
       tag:
@@ -11,9 +12,9 @@ on:
         required: false
         default: ''
       ref:
-        description: Branch to build (a test branch; releases come from main).
+        description: Optional Git ref override; empty uses the selected workflow branch or tag.
         required: false
-        default: main
+        default: ''
       virustotal:
         description: Scan the installers on VirusTotal (needs the VT_API_KEY secret; uploads are shared with its partners)
         type: boolean
@@ -34,15 +35,29 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      # Dispatch: main unless another branch is asked for (ref), whichever branch the run was started
-      # from. Tag push: the pushed tag.
+      # Dispatch: checkout the branch selected in Run workflow unless ref overrides it.
+      # Tag push: checkout the pushed tag.
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.ref || (github.event_name == 'workflow_dispatch' && 'main') || github.ref }}
+          ref: ${{ inputs.ref || github.ref }}
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      # Fail instead of silently packaging upstream English sources on i18n builds.
+      - name: Verify localization checkout
+        if: startsWith(github.ref, 'refs/heads/i18n/')
+        shell: pwsh
+        run: |
+          Write-Host "Building source: $(git rev-parse HEAD)"
+          if (!(Test-Path shared/i18n-ja.js)) { throw "Japanese translation source missing: wrong branch checked out" }
+          if (!(Test-Path shared/i18n-ja.css)) { throw "Japanese translation stylesheet missing" }
+          if (!(Select-String -Path windows/app.html -Pattern 'i18n-ja.js' -Quiet)) { throw "Windows application HTML has no localization script" }
+
+      - name: Test Japanese localization
+        if: startsWith(github.ref, 'refs/heads/i18n/')
+        run: node --test shared/test/i18n-ja.test.js
 
       - uses: ./.github/actions/android-full
         with:

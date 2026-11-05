@@ -42,7 +42,7 @@
   // ---------- finding the page's own nodes (attributes only, no wrappers) ----------
   const titleOf = (wrap) => {
     const t = wrap && wrap.querySelector(':scope > .card-title > span');
-    return t ? String(t.dataset.peer || t.textContent || '').trim() : '';
+    return t ? String(t.dataset.peer || (window.DuoDeskI18n ? window.DuoDeskI18n.sourceText(t) : t.textContent) || '').trim() : '';
   };
   const wrapsOf = (body) => (body ? [...body.querySelectorAll(':scope > .card-wrap')] : []);
   const cardBy = (body, title) => wrapsOf(body).find((w) => titleOf(w) === title) || null;
@@ -53,7 +53,7 @@
     const row = wrap && wrap.querySelector(':scope > .card > .row');
     const v = row && row.querySelector('.value');
     if (!v) return;
-    const t = v.textContent || '';
+    const t = (window.DuoDeskI18n ? window.DuoDeskI18n.sourceText(v) : v.textContent) || '';
     ctx.attr(row, 'data-pg-st', good.test(t) ? 'good' : warn.test(t) ? 'warn' : 'off');
     ctx.attr(row, 'data-pg-status', '');
   }

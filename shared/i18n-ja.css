@@ -1,0 +1,15 @@
+/* DuoDesk community Japanese desktop localization, GPL-3.0.
+ * Language is selected in General settings (normal and mesh shells). */
+html[lang="ja"] body,
+html[lang="ja"] button,
+html[lang="ja"] input,
+html[lang="ja"] select,
+html[lang="ja"] textarea {
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", "Noto Sans CJK JP",
+    "Meiryo", sans-serif;
+}
+html[lang="ja"] body { overflow-wrap: anywhere; }
+/* Keep the language row readable on small windows and with Japanese fonts. */
+html[lang="ja"] .duodesk-locale-settings .row { align-items: center; }
+.duodesk-locale-settings select { max-width: 100%; min-width: 110px; }

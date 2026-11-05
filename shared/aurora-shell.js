@@ -113,7 +113,7 @@
   function labelGroups() {
     for (const [id, [from, to]] of Object.entries(RELABEL)) {
       const l = nav.querySelector('[aria-controls="page-' + id + '"] .label');
-      if (l && l.textContent === from) l.textContent = to;
+      if (l && (window.DuoDeskI18n ? window.DuoDeskI18n.sourceText(l) : l.textContent) === from) l.textContent = to;
     }
     for (const li of nav.children) {
       if (li.classList.contains('sep')) { if (li.dataset.auLabel !== 'More') li.dataset.auLabel = 'More'; continue; }
@@ -992,10 +992,10 @@
         UI.go('connection');
         await wait(120);
         const page = $('page-connection');
-        const btn = page && [...page.querySelectorAll('button')].find((b) => /qr code/i.test(b.textContent) && !b.disabled && b.offsetParent);
+        const btn = page && [...page.querySelectorAll('button')].find((b) => /qr code/i.test(window.DuoDeskI18n ? window.DuoDeskI18n.sourceText(b) : b.textContent) && !b.disabled && b.offsetParent);
         if (!btn) return { info: 'Pair a phone from Connection (the QR card shows while no phone is connected)' };
         btn.scrollIntoView({ block: 'center', behavior: 'smooth' });
-        if (!/hide/i.test(btn.textContent)) btn.click();
+        if (!/hide/i.test(window.DuoDeskI18n ? window.DuoDeskI18n.sourceText(btn) : btn.textContent)) btn.click();
         return { ok: 'Scan the code with the phone’s camera' };
       },
     };
