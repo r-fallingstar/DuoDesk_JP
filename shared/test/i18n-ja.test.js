@@ -136,14 +136,12 @@ test('Japanese is the initial desktop language', () => {
 
 test('English toggle restores the original display text', () => {
   const h = harness();
-  const toggle = h.sidebar.children[0];
-  assert.equal(toggle.textContent, 'EN');
-  toggle.click();
+  assert.equal(h.sidebar.children.length, 0, 'No sidebar language button');
+  h.window.DuoDeskI18n.setLanguage('en');
   assert.equal(h.document.documentElement.lang, 'en');
   assert.equal(h.state.textContent, 'Not connected');
   assert.equal(h.placeholder.getAttribute('placeholder'), 'Hotspot name');
-  assert.equal(toggle.textContent, '日本語');
-  toggle.click();
+  h.window.DuoDeskI18n.setLanguage('ja');
   assert.equal(h.state.textContent, '未接続');
 });
 
@@ -165,7 +163,7 @@ test('General settings provides a persistent Japanese/English selector', () => {
   choice.choose('en');
   assert.equal(h.document.documentElement.lang, 'en');
   assert.equal(h.state.textContent, 'Not connected');
-  assert.equal(h.sidebar.children[0].textContent, '日本語');
+  assert.equal(h.sidebar.children.length, 0);
   choice.choose('ja');
   assert.equal(h.document.documentElement.lang, 'ja');
   assert.equal(h.state.textContent, '未接続');
@@ -185,12 +183,12 @@ test('Aurora feature hover tooltip and accessible description are localized', ()
   assert.equal(feature.getAttribute('aria-description'),
     'キーボード · オフ · 接続中の端末が必要です （設定ページを開きます）');
 
-  h.sidebar.children[0].click();
+  h.window.DuoDeskI18n.setLanguage('en');
   assert.equal(feature.getAttribute('data-tip'), label);
   assert.equal(feature.getAttribute('aria-description'), label + ' (opens its page)');
 
   // A status refresh rewrites the original English attribute, just as AuroraShell does.
-  h.sidebar.children[0].click();
+  h.window.DuoDeskI18n.setLanguage('ja');
   feature.setAttribute('data-tip', 'Keyboard · on');
   h.observe([{ type: 'attributes', target: feature, attributeName: 'data-tip' }]);
   assert.equal(feature.getAttribute('data-tip'), 'キーボード · オン');
