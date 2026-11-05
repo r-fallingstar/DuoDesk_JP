@@ -237,8 +237,8 @@
   "Fix firewall": "ファイアウォールを修復",
   "Firewall": "ファイアウォール",
   "Needs a fix": "修復が必要です",
-  "Turn on": "有効にする",
-  "Turn off": "無効にする",
+  "Turn on": "オンにする",
+  "Turn off": "オフにする",
   "Mouse and keyboard helper": "マウス・キーボード補助機能",
   "Wake from the network": "ネットワーク経由でスリープ解除",
   "Start with Windows": "Windowsの起動時に開始",
@@ -432,7 +432,7 @@
   "What it is": "内容の種類",
   "Your message": "メッセージ本文",
   "Move here": "ここへ移動",
-  "Empty place": "空いている場所",
+  "Empty place": "空いている位置",
   "Layout": "配置",
   "Chains": "接続チェーン",
   "Joining": "参加中",
@@ -440,7 +440,7 @@
   "Use several devices at once": "複数の端末を同時に使用できます",
   "Join every device automatically": "すべての端末に自動参加",
   "Not paired here": "このPCではペアリングされていません",
-  "On. DuoDesk restarts when you turn it on or off": "オン。切り替えるとDuoDeskが再起動します",
+  "On. DuoDesk restarts when you turn it on or off": "オン／オフを切り替えるとDuoDeskが再起動します",
   "No tips yet. Yours could be the first.": "まだ支援がありません。最初の支援者になれます。",
   "DuoDesk is free and open source. A tip keeps it that way.": "DuoDeskは無料のオープンソースソフトウェアです。支援は開発継続に役立ちます。",
   "Permissions": "アクセス許可",
@@ -760,14 +760,55 @@
   "Reconnecting to the paired computer": "ペアリング済みのPCへ再接続中",
   "Pick a device on Connection": "接続ページで端末を選択してください",
   "Tooltip": "説明",
-  "1280 × 720": "1280 × 720"
+  "1280 × 720": "1280 × 720",
+  "Multi-device · Mesh mode": "複数端末・メッシュモード",
+  "Several computers and phones connected at once": "複数のパソコンやスマホを同時に接続できます",
+  "Click a device, then a place next to another device to move it there, or another device to swap places. Devices sit side by side, with no empty space between them.": "端末を選択し、別の端末の隣の位置をクリックすると移動します。別の端末をクリックすると位置を入れ替えます。端末は隙間を空けずに配置されます。",
+  "Now click a lit place next to another device to move it there, or another device to swap places.": "光っている移動先をクリックすると配置を変更できます。別の端末をクリックすると位置を入れ替えます。",
+  "That did not move: a device goes next to another one, side by side.": "移動できませんでした。端末はほかの端末と隣接する位置に配置してください。",
+  "Pair with one device and the rest connect to this one by themselves. Devices you pair with can introduce others, without a pairing code": "1台とペアリングすると、ほかの端末も自動的に接続できます。ペアリング済みの端末から別の端末を紹介するときは、ペアリングコードは不要です。",
+  "Pair with one device and the rest connect to this Mac by themselves. Devices you pair with can introduce others, without a pairing code": "1台とペアリングすると、ほかの端末もこのMacに自動接続できます。ペアリング済みの端末から別の端末を紹介するときは、コード入力は不要です。",
+  "Off: this PC neither introduces devices to each other nor accepts an introduction. Pair each device yourself": "オフ：このPCは端末の自動紹介を行わず、ほかの端末からの紹介も受け付けません。各端末を個別にペアリングしてください。",
+  "Off: this Mac neither introduces devices to each other nor accepts an introduction. Pair each device yourself": "オフ：このMacは端末の自動紹介を行わず、ほかの端末からの紹介も受け付けません。各端末を個別にペアリングしてください。",
+  "Off: this computer neither introduces devices to each other nor accepts an introduction. Pair each device yourself": "オフ：このパソコンは端末の自動紹介を行わず、ほかの端末からの紹介も受け付けません。各端末を個別にペアリングしてください。",
+  "Restarting…": "再起動中…",
+  "Computers": "パソコン",
+  "Connect to this one over the same network only, not Bluetooth. Phones over Wi-Fi, a USB cable or Bluetooth, as before": "パソコン同士は同じネットワークでのみ接続できます（Bluetooth非対応）。スマホは従来どおりWi-Fi・USB・Bluetoothで接続できます。",
+  "This Mac": "このMac",
+  "not connected to this PC, so the pointer stops before it": "このPCに接続されていないため、そこでポインターが止まります",
+  "not connected to this Mac, so the pointer stops before it": "このMacに接続されていないため、そこでポインターが止まります",
+  "not connected to this computer, so the pointer stops before it": "このパソコンに接続されていないため、そこでポインターが止まります",
+  "the pointer gets there only past a device it can't reach from here": "ここから操作できない端末の先にあるため、ポインターを移動できません",
+  "Turn on Multi-device?": "複数端末モードをオンにしますか？",
+  "Mesh mode links three or more computers and phones at once: every device to every other.": "複数端末モードでは、3台以上のパソコンやスマホを相互に接続できます。",
+  "If you connect only two devices, keep it off.": "2台だけを接続する場合は、複数端末モードをオフのままにしてください。",
+  "DuoDesk restarts when you turn it on or off.": "切り替えるとDuoDeskが再起動します。",
+  "Every device linked to every other: one clipboard and one set of notifications for all, and the mouse and keyboard across all of them.": "すべての端末を相互接続し、クリップボード・通知・マウス・キーボードを端末間で共有できます。",
+  "encrypted": "暗号化済み",
+  "TLS with a pinned certificate, on every route": "すべての接続で証明書を固定したTLS暗号化を使用します",
+  "Paired · offline": "ペアリング済み · オフライン",
+  "Nearby · Click to connect": "近くの端末 · クリックして接続",
+  "joining": "接続参加中",
+  "offline": "オフライン",
+  "connecting": "接続中",
+  "not paired here": "この端末とは未ペアリング",
+  "Another device": "別の端末"
 });
 
   const textSources = new WeakMap();
   const attrSources = new WeakMap();
   const skip = '[data-duodesk-no-i18n],script,style,noscript,pre,code,textarea,[contenteditable="true"]';
-  const attributes = ['placeholder', 'title', 'alt', 'data-au-label', 'data-tip', 'aria-description'];
+  const attributes = ['placeholder', 'title', 'alt', 'data-au-label', 'data-tip', 'aria-description', 'aria-label'];
   const matchers = [
+    // Mesh reachability warnings include peer names and vary across Windows/Mac/Linux.
+    [/^(.+?) (?:isn't|aren't) connected to this (PC|Mac|computer), so the pointer stops before (?:it|them)( and doesn't get to the devices past (?:it|them))?\. Pair (?:it|them) with this (?:PC|Mac|computer)(, or turn on Join every device automatically)?\.$/,
+      (names, system, behind, autoJoin) => {
+        const here = system === 'Mac' ? 'このMac' : system === 'computer' ? 'このパソコン' : 'このPC';
+        return names + 'は' + here + 'に直接接続されていないため、そこでポインターが止まります。'
+          + (behind ? 'その先の端末にも移動できません。' : '')
+          + names + 'を' + here + 'とペアリング'
+          + (autoJoin ? 'するか、「すべての端末に自動参加」をオンにしてください。' : 'してください。');
+      }],
     [/^Connecting to (.+)$/, (v) => v + ' に接続中…'],
     [/^Waiting for (.+)$/, (v) => v + ' を待っています'],
     [/^Pairing with (.+)$/, (v) => v + ' とペアリング中…'],
@@ -838,6 +879,21 @@
       const localized = translate(part);
       if (localized !== part) value = localized + ' （設定ページを開きます）';
     }
+    // Device names prefix a state with an em dash, e.g. "rion-pc — Connected".
+    if (value === null && key.includes(' — ')) {
+      const i = key.lastIndexOf(' — ');
+      const right = key.slice(i + 3);
+      const translated = translate(right);
+      if (translated !== right) value = key.slice(0, i + 3) + translated;
+    }
+    // Tile tooltips append a reachability explanation to the state.
+    if (value === null && key.includes(': ')) {
+      const i = key.indexOf(': ');
+      const left = key.slice(0, i), right = key.slice(i + 2);
+      const translatedLeft = translate(left), translatedRight = translate(right);
+      if (translatedLeft !== left || translatedRight !== right)
+        value = translatedLeft + '：' + translatedRight;
+    }
     // Aurora hover hints combine feature, on/off and reason using a bullet separator.
     if (value === null && key.includes(' · ')) {
       const parts = key.split(' · ');
@@ -882,6 +938,9 @@
       if (!element.hasAttribute(name)) continue;
       const current = element.getAttribute(name);
       const previous = saved.get(name);
+      // Other ARIA labels are queried by the app's feature logic: do not rewrite them.
+      if (name === 'aria-label' && current !== 'Move here' && current !== 'Empty place'
+          && !(previous && current === previous.japanese)) continue;
       if (language === 'en') {
         if (previous && current === previous.japanese) element.setAttribute(name, previous.english);
       } else {

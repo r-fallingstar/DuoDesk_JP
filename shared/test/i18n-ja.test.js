@@ -228,3 +228,60 @@ test('Localization keeps proper device and app names and has no sidebar switch',
   h.choice().choose('ja');
   assert.equal(h.state.textContent, '未接続');
 });
+
+
+test('Mesh layout instructions are fully localized and reversible', () => {
+  const h = harness(true);
+  const source = 'Click a device, then a place next to another device to move it there, or another device to swap places. Devices sit side by side, with no empty space between them.';
+  const localized = '端末を選択し、別の端末の隣の位置をクリックすると移動します。別の端末をクリックすると位置を入れ替えます。端末は隙間を空けずに配置されます。';
+  const note = h.document.createElement('div');
+  note.textContent = source;
+  h.document.body.appendChild(note);
+  h.observe([{ type: 'childList', addedNodes: [note] }]);
+  assert.equal(note.textContent, localized);
+  assert.equal(h.window.DuoDeskI18n.sourceText(note), source);
+  h.choice().choose('en');
+  assert.equal(note.textContent, source);
+  h.choice().choose('ja');
+  assert.equal(note.textContent, localized);
+  assert.equal(h.window.DuoDeskI18n.translate('Now click a lit place next to another device to move it there, or another device to swap places.'),
+    '光っている移動先をクリックすると配置を変更できます。別の端末をクリックすると位置を入れ替えます。');
+});
+
+test('Mesh auto-join settings and mode confirmation are translated', () => {
+  const tr = harness().window.DuoDeskI18n.translate;
+  assert.equal(tr('Pair with one device and the rest connect to this one by themselves. Devices you pair with can introduce others, without a pairing code'),
+    '1台とペアリングすると、ほかの端末も自動的に接続できます。ペアリング済みの端末から別の端末を紹介するときは、ペアリングコードは不要です。');
+  assert.equal(tr('Off: this PC neither introduces devices to each other nor accepts an introduction. Pair each device yourself'),
+    'オフ：このPCは端末の自動紹介を行わず、ほかの端末からの紹介も受け付けません。各端末を個別にペアリングしてください。');
+  assert.equal(tr('Turn on Multi-device?'), '複数端末モードをオンにしますか？');
+  assert.equal(tr('encrypted'), '暗号化済み');
+});
+
+test('Mesh connectivity warning preserves peer names and connection semantics', () => {
+  const tr = harness().window.DuoDeskI18n.translate;
+  const source = "DESKTOP-8PAUIFA isn't connected to this PC, so the pointer stops before it and doesn't get to the devices past it. Pair it with this PC, or turn on Join every device automatically.";
+  const result = tr(source);
+  assert.match(result, /DESKTOP-8PAUIFA/);
+  assert.match(result, /ポインターが止まります/);
+  assert.match(result, /その先の端末にも移動できません/);
+  assert.match(result, /自動参加/);
+  assert.ok(!result.includes("isn't connected"));
+  assert.equal(tr('rion-pc — Connected'), 'rion-pc — 接続済み');
+  assert.equal(tr('rion-pc — Not paired here: not connected to this PC, so the pointer stops before it'),
+    'rion-pc — このPCではペアリングされていません：このPCに接続されていないため、そこでポインターが止まります');
+});
+
+test('Mesh placement accessibility labels are localized without touching device-name labels', () => {
+  const h = harness();
+  const place = h.document.createElement('button');
+  place.setAttribute('aria-label', 'Move here');
+  h.document.body.appendChild(place);
+  h.observe([{ type: 'childList', addedNodes: [place] }]);
+  assert.equal(place.getAttribute('aria-label'), 'ここへ移動');
+  h.window.DuoDeskI18n.setLanguage('en');
+  assert.equal(place.getAttribute('aria-label'), 'Move here');
+  h.window.DuoDeskI18n.setLanguage('ja');
+  assert.equal(place.getAttribute('aria-label'), 'ここへ移動');
+  assert.equal(h.window.DuoDeskI18n.translate('rion-pc'), 'rion-pc');
+});
