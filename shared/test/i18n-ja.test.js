@@ -170,3 +170,37 @@ test('General settings provides a persistent Japanese/English selector', () => {
   assert.equal(h.document.documentElement.lang, 'ja');
   assert.equal(h.state.textContent, '未接続');
 });
+
+
+test('Aurora feature hover tooltip and accessible description are localized', () => {
+  const h = harness();
+  const feature = h.document.createElement('button');
+  const label = 'Keyboard · off · needs a connected device';
+  feature.setAttribute('data-tip', label);
+  feature.setAttribute('aria-description', label + ' (opens its page)');
+  h.document.body.appendChild(feature);
+  h.observe([{ type: 'childList', addedNodes: [feature] }]);
+
+  assert.equal(feature.getAttribute('data-tip'), 'キーボード · オフ · 接続中の端末が必要です');
+  assert.equal(feature.getAttribute('aria-description'),
+    'キーボード · オフ · 接続中の端末が必要です （設定ページを開きます）');
+
+  h.sidebar.children[0].click();
+  assert.equal(feature.getAttribute('data-tip'), label);
+  assert.equal(feature.getAttribute('aria-description'), label + ' (opens its page)');
+
+  // A status refresh rewrites the original English attribute, just as AuroraShell does.
+  h.sidebar.children[0].click();
+  feature.setAttribute('data-tip', 'Keyboard · on');
+  h.observe([{ type: 'attributes', target: feature, attributeName: 'data-tip' }]);
+  assert.equal(feature.getAttribute('data-tip'), 'キーボード · オン');
+});
+
+test('Dynamic hover hints keep peer names intact', () => {
+  const h = harness();
+  const tip = 'Apps · connect rion-pc first';
+  assert.equal(h.window.DuoDeskI18n.translate(tip),
+    'アプリ · 先にrion-pcに接続してください');
+  assert.equal(h.window.DuoDeskI18n.translate('Mouse · off · not available now'),
+    'マウス · オフ · 現在利用できません');
+});
