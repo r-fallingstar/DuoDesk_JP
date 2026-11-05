@@ -568,7 +568,7 @@
   const textSources = new WeakMap();
   const attrSources = new WeakMap();
   const skip = '[data-duodesk-no-i18n],script,style,noscript,pre,code,textarea,[contenteditable="true"]';
-  const attributes = ['placeholder', 'title', 'alt'];
+  const attributes = ['placeholder', 'title', 'alt', 'data-au-label'];
   const matchers = [
     [/^Connecting to (.+)$/, (v) => v + ' に接続中…'],
     [/^Waiting for (.+)$/, (v) => v + ' を待っています'],
