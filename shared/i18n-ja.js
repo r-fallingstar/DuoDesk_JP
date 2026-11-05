@@ -562,13 +562,26 @@
   "English": "英語",
   "Japanese": "日本語",
   "Switch to English": "英語に切り替え",
-  "Switch to Japanese": "日本語に切り替え"
+  "Switch to Japanese": "日本語に切り替え",
+  "on": "オン",
+  "off": "オフ",
+  "needs a connected device": "接続中の端末が必要です",
+  "not available now": "現在利用できません",
+  "not with Linux yet": "Linuxではまだ利用できません",
+  "not with this device": "この端末では利用できません",
+  "(opens its page)": "（設定ページを開きます）",
+  "connect a device first": "先に端末を接続してください",
+  "select a device first": "先に端末を選択してください",
+  "connect the phone first": "先にスマホを接続してください",
+  "Open Connection": "接続画面を開く",
+  "open": "開く",
+  "select": "選択"
 });
 
   const textSources = new WeakMap();
   const attrSources = new WeakMap();
   const skip = '[data-duodesk-no-i18n],script,style,noscript,pre,code,textarea,[contenteditable="true"]';
-  const attributes = ['placeholder', 'title', 'alt', 'data-au-label'];
+  const attributes = ['placeholder', 'title', 'alt', 'data-au-label', 'data-tip', 'aria-description'];
   const matchers = [
     [/^Connecting to (.+)$/, (v) => v + ' に接続中…'],
     [/^Waiting for (.+)$/, (v) => v + ' を待っています'],
@@ -582,7 +595,12 @@
     [/^Send to (.+)$/, (v) => v + ' に送信'],
     [/^Sent to (.+)$/, (v) => v + ' に送信しました'],
     [/^From (.+)$/, (v) => v + ' から'],
-    [/^Couldn’t check: (.+)$/, (v) => '更新を確認できません: ' + v]
+    [/^Couldn’t check: (.+)$/, (v) => '更新を確認できません: ' + v],
+    [/^select (.+) first$/, (v) => '先に' + v + 'を選択してください'],
+    [/^connect (.+) first$/, (v) => '先に' + v + 'に接続してください'],
+    [/^Open (.+)$/, (v) => v + 'を開く'],
+    [/^Select (.+)$/, (v) => v + 'を選択'],
+    [/^Connect to (.+)$/, (v) => v + 'に接続']
   ];
   function translate(source) {
     // Retain whitespace and avoid changing filenames, identifiers and live peer names.
@@ -595,6 +613,18 @@
         const found = key.match(pattern);
         if (found) { value = format(found[1]); break; }
       }
+    }
+    // Aurora's hover hints combine a feature, on/off state and a reason with " · ".
+    // Translate each component without translating device names or internal identifiers.
+    if (value === null && key.includes(' · ')) {
+      const parts = key.split(' · ');
+      const localized = parts.map((part) => translate(part));
+      if (localized.some((part, i) => part !== parts[i])) value = localized.join(' · ');
+    }
+    if (value === null && key.endsWith(' (opens its page)')) {
+      const part = key.slice(0, -' (opens its page)'.length);
+      const localized = translate(part);
+      if (localized !== part) value = localized + ' （設定ページを開きます）';
     }
     return value === null ? source : match[1] + value + match[3];
   }
